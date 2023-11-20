@@ -1,0 +1,5 @@
+{% extends 'base.jinja-html' %}
+{% block title %}Thank You!{% endblock %}
+{% block content %}
+<h1>Thank You for Completing Our Survey!</h1>
+{% endblock %}

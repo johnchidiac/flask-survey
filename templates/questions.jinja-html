@@ -1,0 +1,27 @@
+{% extends 'base.jinja-html' %}
+{% block title %}{{title}}{% endblock %}
+{% block content %}
+{% with messages = get_flashed_messages() %}
+	{% if messages %}
+		<section>
+		{% for message in messages %}
+			<p>{{ message }}</p>
+		{% endfor %}
+		</section>
+	{% endif %}
+{% endwith %}
+<h1>{{title}}</h1>
+<h2>{{instructions}}</h2>
+<form action="/answers" method="POST">
+	<h3>{{question}}</h3>
+	
+	{% for choice in choices %}
+	<div>
+		<input type="radio" id="{{choice}}" name="choice" value="{{choice}}" />
+		<label for="{{choice}}">{{choice}}</label>
+	</div>
+	{% endfor %}
+	<input type="hidden" name="id" value="{{id}}">
+	<button>Submit</button>
+</form>
+{% endblock %}
