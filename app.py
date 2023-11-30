@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, flash, redirect
+from flask import Flask, request, render_template, flash, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
 import surveys
 
@@ -20,10 +20,10 @@ def start():
     return render_template("start.jinja-html")
 
 
-@app.route("/questions")
+@app.route("/questions", methods=["GET", "POST"])
 def root_redirect():
     """Redirect requsets to questions root (questions/)"""
-
+    session["responses"] = []
     return redirect("/questions/0")
 
 
@@ -32,8 +32,12 @@ def survey(question_id):
     """Display survey pages"""
 
     survey = surveys.satisfaction_survey
-
-    if question_id > len(survey.questions):
+    responses = session["responses"]
+    breakpoint()
+    if question_id == len(survey.questions) and question_id == len(responses):
+        """Survey complete!"""
+        return redirect("/thank-you")
+    elif question_id > len(survey.questions):
         """Out of range"""
         flash(">:( You're trying to access an invalid question")
         return redirect("/questions/" + str(len(responses)))
@@ -53,18 +57,13 @@ def record_answer():
     """Save the posted response and redirect"""
 
     survey = surveys.satisfaction_survey
+    responses = session["responses"]
     question_id = int(request.form["id"])
-    print(len(responses))
-
-    if question_id == len(survey.questions) - 1 and question_id == len(responses):
-        """Survey complete!"""
-        return redirect("thank-you")
-    else:
-        """Moving right along"""
-        response = request.form.get("choice")
-        responses.append(response)
-        next_question = question_id + 1
-        return redirect("/questions/" + str(next_question))
+    response = request.form.get("choice")
+    responses.append(response)
+    session["responses"] = responses
+    next_question = question_id + 1
+    return redirect("/questions/" + str(next_question))
 
 
 @app.route("/thank-you")

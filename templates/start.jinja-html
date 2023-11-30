@@ -2,7 +2,7 @@
 {% block title %}Start Survey{% endblock %}
 {% block content %}
 <h1>Take a Survey</h1>
-<form action="questions">
+<form action="/questions" method="POST">
 	<button>Start Survey</button>
 </form>
 {% endblock %}
